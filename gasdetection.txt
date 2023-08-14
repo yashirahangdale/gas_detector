@@ -1,0 +1,42 @@
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+BlynkTimer timer;
+#define BLYNK_PRINT Serial    // Comment this out to disable prints and save space
+char auth [] = "n2qoaA80ZqeMO0S1NTBcpU7L9a7UwpI_"; //Enter Authentication code sent by Blynk on your regested email
+ 
+
+char ssid [] = "Hugsey"; // Enter WIFI Name Here
+char pass [] = "MoMMy@6969"; // Enter WIFI Password Here
+ 
+ 
+int mq2 = A0; // smoke sensor is connected with the analog pin A0 
+int data = 0; 
+void setup () 
+{
+  pinMode (D8, OUTPUT);
+  Serial.begin(115200);
+  Blynk.begin(auth, ssid, pass);
+  timer. setInterval (500L, getSendData);
+}
+ 
+void loop () 
+{
+  timer.run (); // Initiates SimpleTimer
+  Blynk.run ();
+}
+ 
+void getSendData ()
+{
+data = analogRead(mq2); 
+  Blynk.virtualWrite(V2, data);
+ 
+  if (data > 200)
+  {
+    digitalWrite (D8, HIGH);
+    Blynk.notify("Gas Detected!"); 
+
+  } else {
+    digitalWrite (D8, LOW);
+  }
+ 
+}
